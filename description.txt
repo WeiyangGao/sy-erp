@@ -10,7 +10,13 @@ sy-erp->maven插件->Lifecycle->clean->package.
         If project list is specified, also build projects that depend on projects on the list
 首先切换到工程的根目录，
 单独构建模块 pingjuan-web，同时会构建 pingjuan-web 模块依赖的其他模块
-$ mvn install -pl pingjuan-web -am
+install -pl pingjuan-web -am
 单独构建模块 pingjuan-common，同时构建依赖模块 pingjuan-common 的其他模块
-$ mvn install -pl pingjuan-common -am -amd
-
+install -pl pingjuan-common -am -amd
+在intellj下单独构建模块:
+->下拉启动按钮
+->Edit Configurations
+->加号按钮->Maven
+->Name: package-service-businfo
+->Working Derictry： C:/Users/Gaowy/IdeaProjects/sy-erp
+->Conmand Line: install -pl service-businfo -am
