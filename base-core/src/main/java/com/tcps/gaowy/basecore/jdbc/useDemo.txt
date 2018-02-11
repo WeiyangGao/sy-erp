@@ -1,0 +1,174 @@
+package com.github.weiyanggao.jdbcservice.bustype;
+
+import com.github.weiyanggao.jdbcservice.base.Page;
+import com.github.weiyanggao.jdbcservice.base.TcpsBaseDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
+
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+*   2018-01-09 Gaoweiyang
+*/
+@Repository
+public class BusTypeSecondDAO extends TcpsBaseDAO<BusType> {
+
+    /**
+     * 调用了封装的翻页查询方法，查询条件与bean绑定，极大的减少了模板代码，
+     * 但是IDEA对SQL的提示也没有了。
+     *
+     * @param busTypePage
+     * @return Page<BusType>
+     */
+    public Page<BusType> listForPage(Page<BusType> busTypePage) {
+        BusType busType = busTypePage.getBean();
+        String sql = "SELECT * FROM t_bus_type WHERE 1=1 ";
+        if (!StringUtils.isEmpty(busType.getBusTypeNo())) {
+            sql = sql + " AND bus_type_no IN (:busTypeNo)";
+        }
+        if (!StringUtils.isEmpty(busType.getBusTypeName())) {
+            sql = sql + " AND bus_type_name LIKE '%'||:busTypeName||'%'";
+        }
+        //注意灵活查询与绑定bean查询，传参区别
+        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(busType);
+        busTypePage = this.queryForPage(busTypePage, sql, sqlParameterSource);
+        return busTypePage;
+    }
+
+    /**
+     * 灵活查询，查询条件不与Bean绑定。有SQL提示。
+     *
+     * @param busType
+     * @return
+     */
+    public List listAllEq(BusType busType) {
+        String sql = "SELECT * FROM t_bus_type WHERE bus_type_no = :busTypeNo";
+        //注意灵活查询与绑定bean查询，传参区别
+        MapSqlParameterSource namedParameters = new MapSqlParameterSource();
+        namedParameters.addValue("busTypeNo", busType.getBusTypeNo());
+        if (!StringUtils.isEmpty(busType.getBusTypeName())) {
+            sql += " and bus_type_name =:busTypeName ";
+            namedParameters.addValue("busTypeName", busType.getBusTypeName());
+        }
+        return namedParameterJdbcTemplate.query(sql, namedParameters, new BeanPropertyRowMapper<>(BusType.class));
+    }
+
+    /**
+     * 简单查询。方式一：运用 NamedParameterJdbcTemplate
+     *
+     * @return
+     */
+    public Long countBustype() {
+        String sql = "SELECT count(1) FROM t_bus_type";
+        return namedParameterJdbcTemplate.queryForObject(sql, new MapSqlParameterSource(), Long.class);
+    }
+
+    /**
+     * 简单查询。方式二：运用 JdbcTemplate
+     *
+     * @return
+     */
+    public Long countBustypeUseJdbc() {
+        String sql = "SELECT count(1) FROM t_bus_type";
+        return jdbcTemplate.queryForObject(sql, Long.class);
+    }
+
+    /**
+     * 添加：自己拼接SQL。
+     *
+     * @param busType
+     * @return 数据库变化的行数
+     */
+    public Integer save(final BusType busType) {
+        String sql = "INSERT INTO t_bus_type(bus_type_no, bus_type_name, bus_color, engine, powers, note, op_no, op_date)" +
+                " VALUES (:busTypeNo,:busTypeName,:busColor,:engine,:powers,:note,:opNo,:opDate)";
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
+        parameterSource.addValue("busTypeNo", busType.getBusTypeNo());
+        parameterSource.addValue("busTypeName", busType.getBusTypeName());
+        parameterSource.addValue("busColor", busType.getBusColor());
+        parameterSource.addValue("engine", busType.getEngine());
+        parameterSource.addValue("powers", busType.getPowers());
+        parameterSource.addValue("note", busType.getNote());
+        parameterSource.addValue("opNo", busType.getOpNo());
+        parameterSource.addValue("opDate", LocalDate.now());
+        return namedParameterJdbcTemplate.update(sql, parameterSource);
+
+    }
+
+    /**
+     * 添加：参数封装到Map。java控制id自增。
+     *
+     * @param busType
+     * @return 返回带自增ID的bean。
+     */
+    public BusType updateByMapReturnKey(BusType busType) {
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("bus_type_no", busType.getBusTypeNo()); //注意key = 数据库字段
+        parameters.put("bus_type_name", busType.getBusTypeName());
+        Number id = updateByMapReturnKey(busType, parameters);
+        busType.setId(id.longValue());
+        return busType;
+    }
+
+    /**
+     * 添加：参数封装到Bean。java控制id自增。
+     *
+     * @param busType
+     * @return 返回带自增ID的bean。
+     */
+    public BusType updateByBeanReturnKey(BusType busType) {
+        SqlParameterSource parameters = new BeanPropertySqlParameterSource(busType);
+        Number id = updateByBeanReturnKey(busType, parameters);
+        busType.setId(id.longValue());
+        return busType;
+    }
+
+    /**
+     * 批量操作，灵活模式。
+     *
+     * @param busTypes
+     * @return
+     */
+    public int[] bathInsert(List<BusType> busTypes) {
+        String sql = "INSERT INTO t_bus_type(id, bus_type_no, bus_type_name, bus_color, engine, powers, note, op_no, op_date)" +
+                " VALUES (?,?,?,?,?,?,?,?,?)";
+        List<Object[]> batchParams = busTypes.stream()
+                .map(busType -> new Object[]{
+                        busType.getId(),
+                        busType.getBusTypeNo(),
+                        busType.getBusTypeName(),
+                        busType.getBusColor(),
+                        busType.getEngine(),
+                        busType.getPowers(),
+                        busType.getNote(),
+                        busType.getOpNo(),
+                        LocalDate.now()
+                }).collect(Collectors.toList());
+        return jdbcTemplate.batchUpdate(sql, batchParams);
+    }
+
+    /**
+     * 批量操作，绑定Beans
+     * @param busTypeList
+     * @return
+     */
+    public int[] bathInsertByBeans(List<BusType> busTypeList) {
+        String sql = "INSERT INTO t_bus_type(bus_type_no, bus_type_name, bus_color, engine, powers, note, op_no, op_date)" +
+                " VALUES (:busTypeNo,:busTypeName,:busColor,:engine,:powers,:note,:opNo,:opDate)";
+        return namedParameterJdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(busTypeList.toArray()));
+    }
+
+}
