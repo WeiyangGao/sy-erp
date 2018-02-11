@@ -5,12 +5,14 @@
 
     <groupId>com.tcps.gaowy</groupId>
     <artifactId>sy-erp</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-RELEASE</version>
     <packaging>pom</packaging>
     <name>sy-erp</name>
+    <!-- 所有子模块 -->
     <modules>
         <module>service-android</module>
         <module>base-core</module>
+        <module>service-businfo</module>
     </modules>
     <!-- 继承SpringBoot提供的父工程，包括SpringIO -->
     <parent>
@@ -24,17 +26,18 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <!--<com.tcps.gowy.version>1.0.0-RELEASE</com.tcps.gowy.version>-->
     </properties>
     <!--统一管理子项目版本号-->
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.tcps.gaowy</groupId>
-                <artifactId>base-core</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <!--<dependencyManagement>-->
+        <!--<dependencies>-->
+            <!--<dependency>-->
+                <!--<groupId>com.tcps.gaowy</groupId>-->
+                <!--<artifactId>base-core</artifactId>-->
+                <!--<version>0.0.1-SNAPSHOT</version>-->
+            <!--</dependency>-->
+        <!--</dependencies>-->
+    <!--</dependencyManagement>-->
 
     <build>
         <plugins>
@@ -46,6 +49,13 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>  <!--默认关掉单元测试 -->
                 </configuration>
             </plugin>
         </plugins>
