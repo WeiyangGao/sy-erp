@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.tcps.gaowy</groupId>
             <artifactId>base-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${projectVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>

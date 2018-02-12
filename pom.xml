@@ -26,7 +26,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <!--<com.tcps.gowy.version>1.0.0-RELEASE</com.tcps.gowy.version>-->
+        <projectVersion>1.0.0-RELEASE</projectVersion>
     </properties>
     <!--统一管理子项目版本号-->
     <!--<dependencyManagement>-->
