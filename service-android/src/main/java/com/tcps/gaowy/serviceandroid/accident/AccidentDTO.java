@@ -10,18 +10,18 @@ import java.util.Date;
 @Data
 public class AccidentDTO extends BaseDO {
 
-    private String serialNo;
+    private String id;
     private Date accidentDate;
-    private Date accidentTime;
-    private String accidentPlace;
+    private String accidentAddress;
     private String license;
-    private String deptNo;
-    private String groupNo;
-    private String lineNo;
+    private String accidentNote;
+    private Long accidentImgNo;
+    private Date op_date;
+    private String op_no;
 
     @Override
     public String tableName() {
-        return "TAB_SEC URITY_ACCI_REG";
+        return "android_bus_accident";
     }
 
 }

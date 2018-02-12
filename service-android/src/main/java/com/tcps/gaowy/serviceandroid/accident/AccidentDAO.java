@@ -5,12 +5,20 @@ import com.tcps.gaowy.basecore.jdbc.TcpsBaseDAO;
 import com.tcps.gaowy.basecore.page.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -19,8 +27,9 @@ public class AccidentDAO extends TcpsBaseDAO<AccidentDTO> {
 
     public AccidentDTO saveAccident(AccidentDTO accidentDTO) {
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(accidentDTO);
-        Number id = saveByBeanReturnKey(accidentDTO, parameterSource);
-        accidentDTO.setSerialNo(id.toString());
+        //如果想获得刚才存入的数据的ID.
+        Object id = saveByBeanReturnKey(accidentDTO, parameterSource);
+        accidentDTO.setId(id.toString());
         return accidentDTO;
 
     }
@@ -59,5 +68,19 @@ public class AccidentDAO extends TcpsBaseDAO<AccidentDTO> {
     public Integer delete(String id) {
         String sql = "DELETE FROM TAB_SECURITY_ACCI_REG WHERE id = ?";
         return jdbcTemplate.update(sql, new Object[]{id}, Integer.class);
+    }
+
+
+    public int[][] batchUpdate(final Collection<AccidentDTO> actors) {
+        int[][] updateCounts = jdbcTemplate.batchUpdate(
+                "INSERT INTO ANDROID_BUS_ACCIDENT (ACCIDENT_ADDRESS,ACCIDENT_NOTE,LICENSE)VALUES (?,?,?)",
+                actors,
+                100,
+                (ps, accidentDAO) -> {
+                    ps.setString(1, accidentDAO.getAccidentAddress());
+                    ps.setString(2, accidentDAO.getAccidentNote());
+                    ps.setString(3, accidentDAO.getLicense());
+                });
+        return updateCounts;
     }
 }

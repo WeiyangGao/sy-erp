@@ -8,7 +8,9 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.KeyHolder;
 
 import java.util.List;
 import java.util.Map;
@@ -49,17 +51,25 @@ public abstract class TcpsBaseDAO<T extends BaseDO> {
         return page;
     }
 
-
     protected Number saveByMapReturnKey(T t, Map<String, Object> params) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource());
         simpleJdbcInsert.withTableName(t.tableName()).usingGeneratedKeyColumns("id");
         return simpleJdbcInsert.executeAndReturnKey(params);
     }
 
-    protected Number saveByBeanReturnKey(T t, SqlParameterSource parameterSource) {
+    /**
+     * 根据Bean 的属性插入。
+     * @param t
+     * @param parameterSource
+     * @return 返回Id,类型调用者转。
+     */
+    protected Object saveByBeanReturnKey(T t, SqlParameterSource parameterSource) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource());
         simpleJdbcInsert.withTableName(t.tableName()).usingGeneratedKeyColumns("id");
-        return simpleJdbcInsert.executeAndReturnKey(parameterSource);
+        KeyHolder keyHolder = simpleJdbcInsert.executeAndReturnKeyHolder(parameterSource);
+        Object keyObj = keyHolder.getKeys().get("ID");
+        return keyObj;
     }
+
 
 }
