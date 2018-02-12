@@ -1,14 +1,15 @@
 编译全部模块：
 sy-erp->maven插件->Lifecycle->clean->package.
 
-单独编译子模块：
+单独编译子模块命令说明：
 -pl, --projects
         Build specified reactor projects instead of all projects
 -am, --also-make
         If project list is specified, also build projects required by the list
 -amd, --also-make-dependents
         If project list is specified, also build projects that depend on projects on the list
-首先切换到工程的根目录，
+如何执行：
+首先切换到工程的根目录(sy-erp)，
 单独构建模块 pingjuan-web，同时会构建 pingjuan-web 模块依赖的其他模块
 install -pl pingjuan-web -am
 单独构建模块 pingjuan-common，同时构建依赖模块 pingjuan-common 的其他模块
@@ -20,3 +21,44 @@ install -pl pingjuan-common -am -amd
 ->Name: package-service-businfo
 ->Working Derictry： C:/Users/Gaowy/IdeaProjects/sy-erp
 ->Conmand Line: install -pl service-businfo -am
+
+根据现有实际情况依赖的版本号控制有2种可行方式：
+第一种方式例子：
+1.在root项目()sy-erp)pom.xml中建立变量：
+<properties>
+    <projectVersion>1.0.0-RELEASE</projectVersion>
+</properties>
+2.base core模块的version引用父模块中的变量。
+<artifactId>base-core</artifactId>
+<packaging>jar</packaging>
+<version>${projectVersion}</version>
+<name>base-core</name>
+3.其他依赖base-core模块的子模块：
+<dependency>
+    <groupId>com.tcps.gaowy</groupId>
+    <artifactId>base-core</artifactId>
+    <version>${projectVersion}</version>
+</dependency>
+这种方式可行，即时base-core自己更新了version，其他子模块也感觉不到。
+但是maven警告：
+[INFO] Scanning for projects...
+[WARNING] Some problems were encountered while building the effective model for com.tcps.gaowy:base-core:jar:1.0.0-RELEASE
+[WARNING] 'version' contains an expression but should be a constant. @ com.tcps.gaowy:base-core:${projectVersion}, C:\Users\Gaowy\IdeaProjects\sy-erp\base-core\pom.xml, line 9, column 14
+version应该是具体实例，而确引用了变量。
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+强烈建议修复这些问题，因为它们威胁到构建的稳定性。
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+将来的maven版本可能不在支持这种畸形的项目。
+第二种方式例子：
+打开intellj Terminal,按照本项目例子:
+1.更新父模块version，以及它的所有子模块引用的父模块version。
+你的位置应该在：C:\Users\Gaowy\IdeaProjects\sy-erp>
+maven命令：mvn versions:set -DnewVersion=1.0.0-RELEASE
+2.更新base-core模块的version。
+你的位置应该在: C:\Users\Gaowy\IdeaProjects\sy-erp\base-core>
+maven命令：mvn -N versions:update-child-modules
+3.更新本号出现问题，回滚：
+mvn versions:revert
+4.更新没问题，提交：
+mvn versions:commit
+参考：http://www.mojohaus.org/versions-maven-plugin/usage.html

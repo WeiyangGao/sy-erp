@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 public class AccidentServiceImpl implements AccidentService {
 
     @Autowired
-    AccidentDO accidentDO;
+    AccidentDAO accidentDO;
 
     @Override
-    public void save(AccidentBean accidentDTO) {
+    public void save(AccidentDTO accidentDTO) {
         int licenseCount = accidentDO.haveLicense(accidentDTO.getLicense());
         if (licenseCount < 1) {
             throw new ApplicationException(0, "不存在的车辆牌照！");
@@ -21,12 +21,12 @@ public class AccidentServiceImpl implements AccidentService {
     }
 
     @Override
-    public Page<AccidentBean> listForPage(Page<AccidentBean> accidentDTO) {
+    public Page<AccidentDTO> listForPage(Page<AccidentDTO> accidentDTO) {
         return accidentDO.listForPage(accidentDTO);
     }
 
     @Override
-    public void update(AccidentBean accidentDTO) {
+    public void update(AccidentDTO accidentDTO) {
         int licenseCount = accidentDO.haveLicense(accidentDTO.getLicense());
         if (licenseCount < 1) {
             throw new ApplicationException(0, "不存在的车辆牌照！");

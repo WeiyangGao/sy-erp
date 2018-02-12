@@ -8,7 +8,7 @@ import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class AccidentBean extends BaseDO {
+public class AccidentDTO extends BaseDO {
 
     private String serialNo;
     private Date accidentDate;

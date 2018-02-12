@@ -15,9 +15,9 @@ import java.util.List;
 
 @Repository
 @Slf4j
-public class AccidentDO extends TcpsBaseDAO<AccidentBean> {
+public class AccidentDAO extends TcpsBaseDAO<AccidentDTO> {
 
-    public AccidentBean saveAccident(AccidentBean accidentDTO) {
+    public AccidentDTO saveAccident(AccidentDTO accidentDTO) {
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(accidentDTO);
         Number id = saveByBeanReturnKey(accidentDTO, parameterSource);
         accidentDTO.setSerialNo(id.toString());
@@ -25,8 +25,8 @@ public class AccidentDO extends TcpsBaseDAO<AccidentBean> {
 
     }
 
-    public Page<AccidentBean> listForPage(final Page<AccidentBean> accidentDTOPage) {
-        AccidentBean accidentDTO = accidentDTOPage.getBean();
+    public Page<AccidentDTO> listForPage(final Page<AccidentDTO> accidentDTOPage) {
+        AccidentDTO accidentDTO = accidentDTOPage.getBean();
         String sql = "select * from TAB_SECURITY_ACCI_REG where 1=1 ";
         log.info(sql);
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(accidentDTO);
@@ -34,11 +34,11 @@ public class AccidentDO extends TcpsBaseDAO<AccidentBean> {
 
     }
 
-    public List<AccidentBean> getDeptInfoByLicense(AccidentBean accidentDTO) {
+    public List<AccidentDTO> getDeptInfoByLicense(AccidentDTO accidentDTO) {
         String sql = "SELECT * FROM TAB_BUS_INFO WHERE LICENSE=:license";
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("license", accidentDTO.getLicense());
-        return namedParameterJdbcTemplate.query(sql, parameterSource, new BeanPropertyRowMapper<>(AccidentBean.class));
+        return namedParameterJdbcTemplate.query(sql, parameterSource, new BeanPropertyRowMapper<>(AccidentDTO.class));
     }
 
     public Integer haveLicense(String license) {
@@ -46,7 +46,7 @@ public class AccidentDO extends TcpsBaseDAO<AccidentBean> {
         return jdbcTemplate.queryForObject(sql, new Object[]{license}, Integer.class);
     }
 
-    public Integer update(AccidentBean accidentDTO) {
+    public Integer update(AccidentDTO accidentDTO) {
         String sql = "UPDATE TAB_SECURITY_ACCI_REG t " +
                 "SET t.accident_date = :accidentDate," +
                 "t.accident_time = :accidentTime," +

@@ -4,11 +4,11 @@ import com.tcps.gaowy.basecore.page.Page;
 
 public interface AccidentService {
 
-    void save(AccidentBean accidentDTO);
+    void save(AccidentDTO accidentDTO);
 
-    Page<AccidentBean> listForPage(Page<AccidentBean> accidentDTO);
+    Page<AccidentDTO> listForPage(Page<AccidentDTO> accidentDTO);
 
-    void update(AccidentBean accidentDTO);
+    void update(AccidentDTO accidentDTO);
 
     void delete(String id);
 }

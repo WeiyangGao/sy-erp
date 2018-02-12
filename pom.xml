@@ -26,18 +26,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <projectVersion>1.0.0-RELEASE</projectVersion>
+        <!--<projectVersion>1.0.0-RELEASE</projectVersion>-->
     </properties>
-    <!--统一管理子项目版本号-->
-    <!--<dependencyManagement>-->
-        <!--<dependencies>-->
-            <!--<dependency>-->
-                <!--<groupId>com.tcps.gaowy</groupId>-->
-                <!--<artifactId>base-core</artifactId>-->
-                <!--<version>0.0.1-SNAPSHOT</version>-->
-            <!--</dependency>-->
-        <!--</dependencies>-->
-    <!--</dependencyManagement>-->
 
     <build>
         <plugins>
@@ -55,7 +45,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skipTests>true</skipTests>  <!--默认关掉单元测试 -->
+                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
         </plugins>

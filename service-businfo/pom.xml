@@ -23,7 +23,7 @@
 		<dependency>
 			<groupId>com.tcps.gaowy</groupId>
 			<artifactId>base-core</artifactId>
-			<version>${projectVersion}</version>
+            <version>1.0.0-RELEASE</version>
 		</dependency>
 		<!-- 不会传递依赖 -->
 		<dependency>

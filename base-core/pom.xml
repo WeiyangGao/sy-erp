@@ -6,7 +6,7 @@
     <!-- Group id 已经在聚合父项目中定义 -->
     <artifactId>base-core</artifactId>
     <packaging>jar</packaging>
-    <version>${projectVersion}</version>
+    <version>1.0.0-RELEASE</version>
     <name>base-core</name>
 
     <parent>
