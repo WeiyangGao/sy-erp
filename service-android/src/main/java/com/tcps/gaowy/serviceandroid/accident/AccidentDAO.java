@@ -16,8 +16,11 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -70,16 +73,25 @@ public class AccidentDAO extends TcpsBaseDAO<AccidentDTO> {
         return jdbcTemplate.update(sql, new Object[]{id}, Integer.class);
     }
 
-
-    public int[][] batchUpdate(final Collection<AccidentDTO> actors) {
+    /**
+     * id可以先存临时表里，再次调用时从临时表里取出。
+     * @param actors
+     * @return
+     * @throws SQLException
+     */
+    public int[][] batchUpdate(final Collection<AccidentDTO> actors) throws SQLException {
+        String sql = "INSERT INTO ANDROID_BUS_ACCIDENT (ACCIDENT_ADDRESS,ACCIDENT_NOTE,LICENSE) VALUES (?,?,?)";
+        //数组第一个，批量执行的次数，第二个，影响行数。
         int[][] updateCounts = jdbcTemplate.batchUpdate(
-                "INSERT INTO ANDROID_BUS_ACCIDENT (ACCIDENT_ADDRESS,ACCIDENT_NOTE,LICENSE)VALUES (?,?,?)",
+                sql,
                 actors,
                 100,
-                (ps, accidentDAO) -> {
-                    ps.setString(1, accidentDAO.getAccidentAddress());
-                    ps.setString(2, accidentDAO.getAccidentNote());
-                    ps.setString(3, accidentDAO.getLicense());
+                new ParameterizedPreparedStatementSetter<AccidentDTO>() {
+                    public void setValues(PreparedStatement ps, AccidentDTO accidentDTO) throws SQLException {
+                        ps.setString(1, accidentDTO.getId());
+                        ps.setString(2, accidentDTO.getAccidentNote());
+                        ps.setString(3, accidentDTO.getLicense());
+                    }
                 });
         return updateCounts;
     }
