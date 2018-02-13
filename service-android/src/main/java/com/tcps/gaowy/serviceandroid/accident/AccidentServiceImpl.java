@@ -2,9 +2,12 @@ package com.tcps.gaowy.serviceandroid.accident;
 
 import com.tcps.gaowy.basecore.appexception.ApplicationException;
 import com.tcps.gaowy.basecore.page.Page;
+import com.tcps.gaowy.basecore.page.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 //每个方法一个事物
@@ -15,8 +18,13 @@ public class AccidentServiceImpl implements AccidentService {
     AccidentDAO accidentDO;
 
     @Override
-    public Page<AccidentDTO> listForPage(Page<AccidentDTO> accidentDTO) {
-        return accidentDO.listForPage(accidentDTO);
+    public List<AccidentDTO> listAll() {
+        return accidentDO.listAll();
+    }
+
+    @Override
+    public List<AccidentDTO> listForPage(AccidentDTO accidentDTO, PageInfo pageInfo) {
+        return accidentDO.listForPage(accidentDTO, pageInfo);
     }
 
     @Override

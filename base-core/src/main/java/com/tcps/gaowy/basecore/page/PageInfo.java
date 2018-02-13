@@ -10,10 +10,17 @@ import java.io.Serializable;
 public class PageInfo implements Serializable {
     private Integer pageNo = 1;
     private Integer pageSize = 10;
-    //private Integer pageStartIndex;
-    //private Integer pageEndIndex;
-    //private Integer totalPage = 0;
+    private String orderBy;
+
     private Integer totalCount = 0;
+
+    public String getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
 
     public Integer getPageNo() {
         return pageNo;
@@ -43,10 +50,6 @@ public class PageInfo implements Serializable {
         return (this.pageNo - 1) * this.pageSize;
     }
 
-//    public void setPageStartIndex(Integer pageStartIndex) {
-//        this.pageStartIndex = pageStartIndex;
-//    }
-
     public Integer getPageEndIndex() {
         int end = this.getPageStartIndex() + this.getPageSize();  //不包含最后一条记录-1
         if (end > this.getTotalCount()) {
@@ -55,21 +58,12 @@ public class PageInfo implements Serializable {
         return end;
     }
 
-//    public void setPageEndIndex(Integer pageEndIndex) {
-//
-//        this.pageEndIndex = pageEndIndex;
-//    }
-
     public Integer getTotalPage() {
         if (this.totalCount % this.pageSize == 0) {
             return this.totalCount / this.pageSize;
         }
         return this.totalCount / this.pageSize + 1;
     }
-
-//    public void setTotalPage(Integer totalPage) {
-//        this.totalPage = totalPage;
-//    }
 
     public Integer getTotalCount() {
         return totalCount;

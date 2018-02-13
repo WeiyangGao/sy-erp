@@ -1,12 +1,15 @@
 package com.tcps.gaowy.serviceandroid.controller;
 
 import com.tcps.gaowy.basecore.page.Page;
+import com.tcps.gaowy.basecore.page.PageInfo;
 import com.tcps.gaowy.basecore.utils.Result;
 import com.tcps.gaowy.basecore.utils.ResultUtil;
 import com.tcps.gaowy.serviceandroid.accident.AccidentDTO;
 import com.tcps.gaowy.serviceandroid.accident.AccidentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -17,11 +20,14 @@ public class AccidentController {
     AccidentService accidentService;
 
     @GetMapping(value = "/getAccident")
-    public Page<AccidentDTO> listForPage(Page<AccidentDTO> accidentDTOPage) {
-        return accidentService.listForPage(accidentDTOPage);
+    public List<AccidentDTO> listForPage(AccidentDTO accidentDTOPage, PageInfo pageInfo) {
+        return accidentService.listForPage(accidentDTOPage,pageInfo);
     }
 
-
+    @GetMapping(value = "/accidents")
+    public List<AccidentDTO> listAll() {
+        return accidentService.listAll();
+    }
 
     @PostMapping(value = "/saveAccident")
     public Result<AccidentDTO> save(AccidentDTO accidentDTO) {
