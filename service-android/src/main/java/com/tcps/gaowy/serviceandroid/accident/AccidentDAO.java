@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 
 import java.sql.Connection;
@@ -39,17 +40,19 @@ public class AccidentDAO extends TcpsBaseDAO<AccidentDTO> {
     }
 
     protected List<AccidentDTO> listForPage(final AccidentDTO accidentDTO, PageInfo pageInfo) {
-        pageInfo.setOrderBy("order by id asc");
-        String sql = "select * from TAB_SECURITY_ACCI_REG where 1=1 ";
+        StringBuilder sql = new StringBuilder("select * from ANDROID_BUS_ACCIDENT where 1=1 ");
+        if (!StringUtils.isEmpty(accidentDTO.getLicense())) {
+            sql.append(" and license = :license");
+        }
+        sql.append(" order by id asc ");
         SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(accidentDTO);
-        return queryForPage(accidentDTO,pageInfo, sql, parameterSource);
+        return queryByPageForOracle(accidentDTO, pageInfo, sql.toString(), parameterSource);
 
     }
 
-    protected List<AccidentDTO> listAll() {
-        String sql = " SELECT * FROM ANDROID_BUS_ACCIDENT";
-        //SqlParameterSource parameterSource = new MapSqlParameterSource().addValue("status", accidentDTO.getStatus());
-        return namedParameterJdbcTemplate.query(sql, new BeanPropertyRowMapper<>(AccidentDTO.class));
+    protected AccidentDTO findById(String id) {
+        String sql = " SELECT * FROM ANDROID_BUS_ACCIDENT WHERE ID = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper<>(AccidentDTO.class));
     }
 
     protected List<AccidentDTO> getDeptInfoByLicense(AccidentDTO accidentDTO) {
@@ -57,11 +60,6 @@ public class AccidentDAO extends TcpsBaseDAO<AccidentDTO> {
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("license", accidentDTO.getLicense());
         return namedParameterJdbcTemplate.query(sql, parameterSource, new BeanPropertyRowMapper<>(AccidentDTO.class));
-    }
-
-    protected Integer haveLicense(String license) {
-        String sql = "SELECT count(1) FROM tab_bus_info WHERE license = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{license}, Integer.class);
     }
 
     protected Integer update(AccidentDTO accidentDTO) {

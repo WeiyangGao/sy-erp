@@ -24,7 +24,7 @@ public class AccidentServiceTest {
     public void save() {
         AccidentDTO accidentDTO = new AccidentDTO();
         accidentDTO.setAccidentAddress("南京南街。");
-        accidentDTO.setAccidentDate(new Date());
+        accidentDTO.setAccidentDate(String.valueOf(new Date().getTime()));
         accidentDTO.setLicense("鄂F2869学");
         accidentDTO.setOp_no("1");
         accidentDTO.setOp_date(new Date());

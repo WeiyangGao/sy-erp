@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Date;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Slf4j
@@ -30,9 +32,19 @@ public class AccidentControllerTest {
 
     @Test
     public void listForPage() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/accident/accidents")
-                .contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(6));
+        String result =
+                mockMvc.perform(MockMvcRequestBuilders.get("/accident/list")
+                        .param("pageSize", "3")
+                        .param("pageNo", "1")
+                        //.param("license", "鄂FBT272")
+                        .contentType(MediaType.APPLICATION_JSON_UTF8))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3))
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+        log.info(result);
     }
+
+    
 }

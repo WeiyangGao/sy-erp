@@ -32,6 +32,11 @@ public class AccidentDAOTest {
         }
     }
 
+    @Test
+    public void findById() {
+        log.info(accidentDAO.findById("9C43E66DACDD4AC9978D9B23EFA0AB7E").toString());
+    }
+
     private List<AccidentDTO> initData() {
         List<AccidentDTO> accidentDTOList = new ArrayList<>();
         for (int i = 0; i < 300; i++) {

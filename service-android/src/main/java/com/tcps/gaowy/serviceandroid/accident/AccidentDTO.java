@@ -1,8 +1,10 @@
 package com.tcps.gaowy.serviceandroid.accident;
 
 import com.tcps.gaowy.basecore.dao.BaseDO;
+import com.tcps.gaowy.serviceandroid.validator.IllegalLicense;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.validator.constraints.NotBlank;
 
 import java.util.Date;
 
@@ -10,9 +12,12 @@ import java.util.Date;
 @Data
 public class AccidentDTO extends BaseDO {
 
+
     private String id;
-    private Date accidentDate;
+    private String accidentDate;
+    @NotBlank(message = "地址不能为空！")
     private String accidentAddress;
+    @IllegalLicense(message = "无法识别的牌照！")
     private String license;
     private String accidentNote;
     private Long accidentImgNo;

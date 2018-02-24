@@ -14,7 +14,7 @@ spring:
           min-idle: 10
           test-on-borrow: true
           test-while-idle: true
-          validation-query: SELECT 1
+          validation-query: select 1 from dual
           time-between-eviction-runs-millis: 300000
           min-evictable-idle-time-millis: 1800000
           initial-size: 5

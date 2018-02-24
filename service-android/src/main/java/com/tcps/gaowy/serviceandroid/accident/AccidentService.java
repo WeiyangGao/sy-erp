@@ -1,12 +1,12 @@
 package com.tcps.gaowy.serviceandroid.accident;
 
-import com.tcps.gaowy.basecore.page.Page;
 import com.tcps.gaowy.basecore.page.PageInfo;
 
 import java.util.List;
 
 public interface AccidentService {
-    List<AccidentDTO> listAll();
+
+    AccidentDTO findById(String id);
 
     List<AccidentDTO> listForPage(AccidentDTO accidentDTO, PageInfo pageInfo);
 
@@ -15,4 +15,5 @@ public interface AccidentService {
     void update(AccidentDTO accidentDTO);
 
     void delete(String id);
+
 }
