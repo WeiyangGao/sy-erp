@@ -19,11 +19,14 @@ spring:
           min-evictable-idle-time-millis: 1800000
           initial-size: 5
           max-idle: 10
+  http:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 40MB
 
 #一些自定义的项目配置
 MyProjectConfig:
-  fileUploadPath: d:\upload
-
+  fileUploadPath: d:\upload #上传文件储存文件夹
 #spring:
 #  datasource:
 #    driver-class-name: org.postgresql.Driver

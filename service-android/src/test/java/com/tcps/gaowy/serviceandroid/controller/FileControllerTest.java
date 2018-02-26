@@ -35,7 +35,8 @@ public class FileControllerTest {
         String result = mockMvc.perform(MockMvcRequestBuilders.fileUpload("/file")
                 .file(new MockMultipartFile("file", "test.txt", "multipart/form-data", "sdfasd".getBytes())))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn().getResponse()
+                .andReturn()
+                .getResponse()
                 .getContentAsString();
         log.info(result);
     }

@@ -15,6 +15,8 @@ public class AccidentAspect {
     public Object handleControllerMethod(ProceedingJoinPoint point) throws Throwable {
         Object[] objects = point.getArgs();
         Object o = point.proceed();
+        log.info("AOP 拦截！");
+        log.info(o.toString());
         return o;
     }
 }
